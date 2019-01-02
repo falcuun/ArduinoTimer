@@ -24,6 +24,7 @@ byte columnPins[columnNumber] = {A1, A2, A3, A4}; // Keypad Rows Connection
 
 Keypad myKeypad = Keypad(makeKeymap(keys), rowPins, columnPins, rowNumber, columnNumber); // Construct Keypad with given parameters
 
+const int MAX_INDEX = 5;               // Variable storing max value of Index
 char minutes[3], seconds[3];           // Char Arrays to be turned into an int
 int minute = 0, second = 0, index = 0; // Variables holding values from char arrays
 bool timerRunning = true;              // State of the Timer, Running/Not Running
@@ -31,6 +32,7 @@ bool timerRunning = true;              // State of the Timer, Running/Not Runnin
 void setup()
 {
     lcd.begin(lcdWidth, lcdHeight);
+    lcd.print("00:00");
     Serial.begin(9600);
 }
 
@@ -50,29 +52,37 @@ void inputTime()
         case 0:
             minutes[0] = c;
             lcd.setCursor(index, 0);
+            lcd.print(c);
             break;
         case 1:
             minutes[1] = c;
             minutes[2] = '\0';
             lcd.setCursor(index, 0);
-            break;
-        case 2:
-            seconds[0] = c;
+            lcd.print(c);
+            index++;
             lcd.setCursor(index, 0);
+            lcd.print(':');
             break;
         case 3:
+            seconds[0] = c;
+            lcd.setCursor(index, 0);
+            lcd.print(c);
+            break;
+        case 4:
             seconds[1] = c;
             seconds[2] = '\0';
             lcd.setCursor(index, 0);
+            lcd.print(c);
             break;
         }
         index++;
-        if (index == 4)
+        if (index == MAX_INDEX)
         {
             index = 0;
             lcd.setCursor(index, 0);
             minute = atoi(minutes);
             second = atoi(seconds);
+            lcd.noBlink();
             runTimer();
         }
     }
@@ -83,6 +93,7 @@ void runTimer()
     while (timerRunning)
     {
       lcd.clear();
+      printToLCD();
         if (second <= 0)
         {
             if (minute <= 0)
@@ -99,7 +110,6 @@ void runTimer()
         {
             second--;
         }
-        printToLCD();
         delay(1000);
     }
 }
