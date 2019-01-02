@@ -12,7 +12,7 @@ const byte columnNumber = 4; // Number of Columns on Keypad
 const byte rowNumber = 4;    // Number of Rows on Keypad
 
 char keys[rowNumber][columnNumber] = {
-                          //=============
+    //=============
     {'1', '2', '3', 'A'}, //
     {'4', '5', '6', 'B'}, //  Keypad Keys Defined in Rows and Columns
     {'7', '8', '9', 'C'}, //
@@ -27,12 +27,13 @@ Keypad myKeypad = Keypad(makeKeymap(keys), rowPins, columnPins, rowNumber, colum
 const int MAX_INDEX = 5;               // Variable storing max value of Index
 char minutes[3], seconds[3];           // Char Arrays to be turned into an int
 int minute = 0, second = 0, index = 0; // Variables holding values from char arrays
-bool timerRunning = true;              // State of the Timer, Running/Not Running
+bool timerRunning = true;             // State of the Timer, Running/Not Running
 
 void setup()
 {
     lcd.begin(lcdWidth, lcdHeight);
     lcd.print("00:00");
+    lcd.setCursor(0, 0);
     Serial.begin(9600);
 }
 
@@ -92,13 +93,15 @@ void runTimer()
 {
     while (timerRunning)
     {
-      lcd.clear();
-      printToLCD();
+        lcd.clear();
+        printToLCD();
         if (second <= 0)
         {
             if (minute <= 0)
             {
                 timerRunning = false;
+                lcd.clear();
+                lcd.print("END");
             }
             else
             {
@@ -128,3 +131,12 @@ void printToLCD()
     }
     lcd.print(second);
 }
+
+/*
+
+    TODO 1: Add Array Of All the Numbers and Letters from Keyboard
+    TODO 2: Add a Way to Check for the Buttons and Perform an action accordingly. 
+    TODO 3: Add a Way to Start Timer on * Button
+    TODO 4: Add a Way to Stop Timer on # Button
+
+*/
