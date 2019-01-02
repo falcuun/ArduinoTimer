@@ -21,7 +21,13 @@ char keys[rowNumber][columnNumber] = {  //=============
 byte rowPins[rowNumber] = {A1, A2, A3, A4}; // Keypad Columns Connection
 byte columnPins[columnNumber] = {9, 8, 7, 6}; // Keypad Rows Connection
 
-Keypad myKeypad = Keypad( makeKeymap(keys), rowPins, columnPins, rowNumber, columnNumber);
+Keypad myKeypad = Keypad( makeKeymap(keys), rowPins, columnPins, rowNumber, columnNumber); // Construct Keypad with given parameters 
+
+char minutes[2];
+char seconds[2];
+int minute = 0, second = 0;
+int index = 0;
+bool timerRunning;
 
 void setup()
 {
@@ -31,5 +37,29 @@ void setup()
 
 void loop()
 {
+    inputTime();
+    Serial.println(minutes);
+}
 
+void inputTime()
+{
+    char c = myKeypad.getKey();
+    if(c)
+    {
+        switch(index)
+        {
+            case 0: minutes[0] = c; break;
+            case 1: minutes[1] = c; break;
+            case 2: seconds[0] = c; break;
+            case 3: seconds[1] = c; break;
+        }
+        index++;
+        if(index == 4)
+        {
+            index = 0;
+            lcd.setCursor(index, 0);
+            minute = atoi(minutes);
+            second = atoi(seconds);
+        }
+    }  
 }
