@@ -1,5 +1,6 @@
 {
     "board": "arduino:avr:uno",
     "port": "COM4",
-    "programmer": "USBasp"
+    "programmer": "USBasp",
+    "sketch": "ArduinoTimer.ino"
 }
