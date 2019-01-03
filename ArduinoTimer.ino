@@ -24,16 +24,19 @@ byte columnPins[columnNumber] = {A1, A2, A3, A4}; // Keypad Rows Connection
 
 Keypad myKeypad = Keypad(makeKeymap(keys), rowPins, columnPins, rowNumber, columnNumber); // Construct Keypad with given parameters
 
-const int MAX_INDEX = 5;               // Variable storing max value of Index
-char minutes[3], seconds[3];           // Char Arrays to be turned into an int
-int minute = 0, second = 0, index = 0; // Variables holding values from char arrays
-bool timerRunning = true;             // State of the Timer, Running/Not Running
+const char timer[] = {'T', 'i', 'm', 'e', 'r', ':', ' ', '\0'};
+const int timer_length = sizeof(timer) - 1;
+const int MAX_INDEX = timer_length + 5;           // Variable storing max value of Index
+char minutes[3], seconds[3];                       // Char Arrays to be turned into an int
+int minute = 0, second = 0, index = timer_length; // Variables holding values from char arrays
+bool timerRunning = true;                          // State of the Timer, Running/Not Running
 
 void setup()
 {
     lcd.begin(lcdWidth, lcdHeight);
+    lcd.print(timer);
     lcd.print("00:00");
-    lcd.setCursor(0, 0);
+    lcd.setCursor(timer_length, 0);
     Serial.begin(9600);
 }
 
@@ -50,12 +53,12 @@ void inputTime()
     {
         switch (index)
         {
-        case 0:
+        case timer_length:
             minutes[0] = c;
             lcd.setCursor(index, 0);
             lcd.print(c);
             break;
-        case 1:
+        case (timer_length + 1):
             minutes[1] = c;
             minutes[2] = '\0';
             lcd.setCursor(index, 0);
@@ -64,12 +67,12 @@ void inputTime()
             lcd.setCursor(index, 0);
             lcd.print(':');
             break;
-        case 3:
+        case (timer_length + 3):
             seconds[0] = c;
             lcd.setCursor(index, 0);
             lcd.print(c);
             break;
-        case 4:
+        case (timer_length + 4):
             seconds[1] = c;
             seconds[2] = '\0';
             lcd.setCursor(index, 0);
@@ -119,6 +122,7 @@ void runTimer()
 
 void printToLCD()
 {
+    lcd.print(timer);
     if (minute < 10)
     {
         lcd.print('0');
