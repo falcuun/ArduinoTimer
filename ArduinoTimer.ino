@@ -257,6 +257,10 @@ void runTimer()
                 timerRunning = false; // If bothe Minutes and Seconds are at 0 (Timer is over) set timer state to FALSE (Not Running)
                 lcd.clear();          // Clear the LCD Screen
                 lcd.print("END");     // Print "END" on the Screen
+                delay(3000);
+                lcd.clear();
+                printToLCD();
+                inputTime();
             }
             else
             {
