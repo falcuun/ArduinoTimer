@@ -55,6 +55,7 @@ void setup()
     lcd.begin(lcdWidth, lcdHeight); // Initializing the interface to the LCD screen with given size (lcdW, lcdH)
     lcd.print(timer);               //
     lcd.print("00:00");             // Initial Print on the Screen printing "Timer: 00:00"
+    lcd.blink();                    // Start blinking the cursor on the screen when the method is called
     lcd.setCursor(timer_length, 0); // Setting cursor of LCD to the first space after 0 after "Timer: 00:00"
     Serial.begin(9600);             // Initializing Serial communication with 9600 baud rate
 }
@@ -147,7 +148,6 @@ bool inputTime()
     char c = myKeypad.getKey();
     if (c)
     {
-        lcd.blink(); // Start blinking the cursor on the screen when the method is called
         lcd.setCursor(index, 0);
         if (c)
         {
