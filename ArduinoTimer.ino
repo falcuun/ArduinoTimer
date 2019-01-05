@@ -17,7 +17,7 @@ char keys[rowNumber][columnNumber] = {
     {'1', '2', '3', 'A'}, //
     {'4', '5', '6', 'B'}, //  Keypad Keys Defined in Rows and Columns
     {'7', '8', '9', 'C'}, //
-    {'#', '0', '*', 'D'}  //
+    {'*', '0', '#', 'D'}  //
 };
 //===============================================================
 
@@ -52,6 +52,7 @@ bool timerRunning = false;                        // State of the Timer, Running
 */
 void setup()
 {
+    myKeypad.setHoldTime(5);
     lcd.begin(lcdWidth, lcdHeight); // Initializing the interface to the LCD screen with given size (lcdW, lcdH)
     lcd.print(timer);               //
     lcd.print("00:00");             // Initial Print on the Screen printing "Timer: 00:00"
@@ -122,15 +123,15 @@ void letterCharacters(char c)
 */
 void specialCharacters(char c)
 {
-    if (c)
+    if (myKeypad.getState() == PRESSED)
     {
         switch (c)
         {
-        case '*':
+        case '#':
             timerRunning = false;
             clearInput();
             break;
-        case '#':
+        case '*':
             timerRunning = true;
             runTimer();
             break;
@@ -146,6 +147,7 @@ void specialCharacters(char c)
 bool inputTime()
 {
     char c = myKeypad.getKey();
+    lcd.blink();
     if (c)
     {
         lcd.setCursor(index, 0);
@@ -234,7 +236,6 @@ void clearInput()
         assignNumbers();
     }
 }
-
 /*
  * This method assigns all the numbers to their respected variables and starts a while loop
  * The loop will execute for as long as the timerRunning doesn't equal FALSE
@@ -250,6 +251,7 @@ void runTimer()
     {
         lcd.clear();  // Clear the LCD Screen
         printToLCD(); // Call printToLCD() method
+
         if (second <= 0)
         {
             if (minute <= 0)
@@ -270,6 +272,14 @@ void runTimer()
         }
         else
         {
+            char c = myKeypad.getKey();
+            if (c)
+            {
+                if (c == '#')
+                {
+                    break;
+                }
+            }
             second--; // Decrement the seconds for one
         }
         delay(1000); // Wait for one second
