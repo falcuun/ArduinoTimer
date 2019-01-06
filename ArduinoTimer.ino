@@ -66,6 +66,7 @@ void setup()
 */
 void loop()
 {
+
     if (inputTime())
     {
         char c = myKeypad.getKey(); // Get a key value from the keypad and parse it into a character
@@ -244,45 +245,52 @@ void clearInput()
  * and after each itteration through the loop (After each second) it decrements seconds and minutes 
  * by the given condition
 */
+
+const long interval = 1000;
+unsigned long previousMillis = 0;
 void runTimer()
 {
     assignNumbers();
     while (timerRunning)
     {
-        lcd.clear();  // Clear the LCD Screen
-        printToLCD(); // Call printToLCD() method
-
-        if (second <= 0)
+        unsigned long currentMillis = millis();
+        char c = myKeypad.getKey();
+        if (c)
         {
-            if (minute <= 0)
+            if (c == '#')
             {
-                timerRunning = false; // If bothe Minutes and Seconds are at 0 (Timer is over) set timer state to FALSE (Not Running)
-                lcd.clear();          // Clear the LCD Screen
-                lcd.print("END");     // Print "END" on the Screen
-                delay(3000);
-                lcd.clear();
-                printToLCD();
-                inputTime();
+                break;
+            }
+        }
+        if (currentMillis - previousMillis >= interval)
+        {
+            previousMillis = currentMillis;
+            lcd.clear();  // Clear the LCD Screen
+            printToLCD(); // Call printToLCD() method
+
+            if (second <= 0)
+            {
+                if (minute <= 0)
+                {
+                    timerRunning = false; // If bothe Minutes and Seconds are at 0 (Timer is over) set timer state to FALSE (Not Running)
+                    lcd.clear();          // Clear the LCD Screen
+                    lcd.print("END");     // Print "END" on the Screen
+                    delay(3000);
+                    lcd.clear();
+                    printToLCD();
+                    inputTime();
+                }
+                else
+                {
+                    minute--;    // Decrement the minutes for one
+                    second = 59; // Set the seconds to 59 for next minute
+                }
             }
             else
             {
-                minute--;    // Decrement the minutes for one
-                second = 59; // Set the seconds to 59 for next minute
+                second--; // Decrement the seconds for one
             }
         }
-        else
-        {
-            char c = myKeypad.getKey();
-            if (c)
-            {
-                if (c == '#')
-                {
-                    break;
-                }
-            }
-            second--; // Decrement the seconds for one
-        }
-        delay(1000); // Wait for one second
     }
 }
 
