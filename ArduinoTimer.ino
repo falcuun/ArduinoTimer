@@ -222,6 +222,12 @@ void assignNumbers()
 */
 void clearInput()
 {
+    minute = 0;
+    second = 0;
+    minutes[0] = '0';
+    minutes[1] = '0';
+    seconds[0] = '0';
+    seconds[1] = '0';
     lcd.clear(); // Clears the Screen of any text
     lcd.print(timer);
     lcd.print("00:00");
@@ -256,6 +262,7 @@ void runTimer()
             if (c == '#')
             {
                 previousMillis = 0;
+                clearInput();
                 break;
             }
         }
@@ -270,11 +277,10 @@ void runTimer()
                 if (minute <= 0)
                 {
                     timerRunning = false; // If bothe Minutes and Seconds are at 0 (Timer is over) set timer state to FALSE (Not Running)
-                    lcd.clear();          // Clear the LCD Screen
-                    lcd.print("END");     // Print "END" on the Screen
-                    delay(3000);
                     lcd.clear();
-                    printToLCD();
+                    lcd.print("END"); // Print "END" on the Screen
+                    delay(3000);
+                    clearInput();
                     inputTime();
                 }
                 else
