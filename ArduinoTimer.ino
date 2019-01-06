@@ -259,6 +259,8 @@ void runTimer()
         {
             if (c == '#')
             {
+                previousMillis = 0;
+                lcd.clear();
                 break;
             }
         }
@@ -299,6 +301,7 @@ void runTimer()
 */
 void printToLCD()
 {
+    lcd.clear();
     lcd.print(timer); // Print "Timer: " to the LCD Screen
     if (minute < 10)
     {
