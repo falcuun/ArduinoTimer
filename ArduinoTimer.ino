@@ -50,36 +50,13 @@ bool timerRunning = false;                        // State of the Timer, Running
 /*
  * Setup of the Arduino and it's peripherals 
 */
-void setup()
-{
-    myKeypad.setHoldTime(5);
-    lcd.begin(lcdWidth, lcdHeight); // Initializing the interface to the LCD screen with given size (lcdW, lcdH)
-    lcd.print(timer);               //
-    lcd.print("00:00");             // Initial Print on the Screen printing "Timer: 00:00"
-    lcd.blink();                    // Start blinking the cursor on the screen when the method is called
-    lcd.setCursor(timer_length, 0); // Setting cursor of LCD to the first space after 0 after "Timer: 00:00"
-    Serial.begin(9600);             // Initializing Serial communication with 9600 baud rate
-}
-
-/*
- * Main loop of the arduino
-*/
-void loop()
-{
-
-    if (inputTime())
-    {
-        char c = myKeypad.getKey(); // Get a key value from the keypad and parse it into a character
-        checkInput(c);
-    }
-}
 
 /*
  * This method will check if the input character mathes any character from the input arrays declared above. 
  * Current setup only checks for Special Characters in the array of special Characters
  * But it can serve as an example of the logic used to check the input
 */
-void checkInput(char c)
+bool checkInput(char c)
 {
     if (c)
     {
@@ -89,9 +66,11 @@ void checkInput(char c)
             if (c == special_characters[i])
             {
                 specialCharacters(c);
+                return true;
             }
         }
     }
+    return false;
 }
 
 // Unused // Only for 4x4 Keypads
@@ -157,11 +136,19 @@ bool inputTime()
             switch (index)
             {
             case timer_length:
+                if (checkInput(c))
+                {
+                    break;
+                }
                 minutes[0] = c;          // Assign current c character as a first element of the Minutes[] array
                 lcd.setCursor(index, 0); // Move the cursor of the LCD to index place
                 lcd.print(c);            // Print out the input Character to the LCD
                 break;
             case (timer_length + 1):
+                if (checkInput(c))
+                {
+                    break;
+                }
                 minutes[1] = c;          // Assign current c character as second element of the Minutes[] array
                 minutes[2] = '\0';       // Adding '\0' character to mark the end of the string
                 lcd.setCursor(index, 0); // Move the cursor of the LCD to index place
@@ -171,11 +158,19 @@ bool inputTime()
                 lcd.print(':');          // Print ':' as a divider for MM:SS format
                 break;
             case (timer_length + 3):
+                if (checkInput(c))
+                {
+                    break;
+                }
                 seconds[0] = c;
                 lcd.setCursor(index, 0);
                 lcd.print(c);
                 break;
             case (timer_length + 4):
+                if (checkInput(c))
+                {
+                    break;
+                }
                 seconds[1] = c;
                 seconds[2] = '\0';
                 lcd.setCursor(index, 0);
@@ -230,6 +225,7 @@ void clearInput()
     lcd.clear(); // Clears the Screen of any text
     lcd.print(timer);
     lcd.print("00:00");
+    index = timer_length - 1;
     lcd.setCursor(index, 0);
     lcd.blink();
     if (inputTime())
@@ -260,7 +256,6 @@ void runTimer()
             if (c == '#')
             {
                 previousMillis = 0;
-                lcd.clear();
                 break;
             }
         }
@@ -314,4 +309,28 @@ void printToLCD()
         lcd.print('0'); // If Seconds are less than 10 print out a '0' before printing seconds value for the SS format (ex. 01:05)
     }
     lcd.print(second); // Print the seconds value
+}
+
+void setup()
+{
+    myKeypad.setHoldTime(5);
+    lcd.begin(lcdWidth, lcdHeight); // Initializing the interface to the LCD screen with given size (lcdW, lcdH)
+    lcd.print(timer);               //
+    lcd.print("00:00");             // Initial Print on the Screen printing "Timer: 00:00"
+    lcd.blink();                    // Start blinking the cursor on the screen when the method is called
+    lcd.setCursor(timer_length, 0); // Setting cursor of LCD to the first space after 0 after "Timer: 00:00"
+    Serial.begin(9600);             // Initializing Serial communication with 9600 baud rate
+}
+
+/*
+ * Main loop of the arduino
+*/
+void loop()
+{
+
+    if (inputTime())
+    {
+        char c = myKeypad.getKey(); // Get a key value from the keypad and parse it into a character
+        checkInput(c);
+    }
 }
